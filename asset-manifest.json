@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.css": "/wordle-tami/static/css/main.ec42805a.css",
-    "main.js": "/wordle-tami/static/js/main.d0f8bb10.js",
-    "index.html": "/wordle-tami/index.html",
-    "main.ec42805a.css.map": "/wordle-tami/static/css/main.ec42805a.css.map",
-    "main.d0f8bb10.js.map": "/wordle-tami/static/js/main.d0f8bb10.js.map"
+    "main.css": "/wordle-tamil/static/css/main.ec42805a.css",
+    "main.js": "/wordle-tamil/static/js/main.d0f8bb10.js",
+    "index.html": "/wordle-tamil/index.html",
+    "main.ec42805a.css.map": "/wordle-tamil/static/css/main.ec42805a.css.map",
+    "main.d0f8bb10.js.map": "/wordle-tamil/static/js/main.d0f8bb10.js.map"
   },
   "entrypoints": [
     "static/css/main.ec42805a.css",
