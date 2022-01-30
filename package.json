@@ -1,0 +1,37 @@
+{
+  "name": "react",
+  "version": "0.0.0",
+  "private": true,
+  "homepage": "https://muralikumar92.github.io/wordle-tamil",
+  "dependencies": {
+    "components": "0.1.0",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "react-icons": "^4.3.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "dev": "react-scripts start dev",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -b master -d build"
+  },
+  "devDependencies": {
+    "gh-pages": "^3.2.3",
+    "react-scripts": "latest"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
