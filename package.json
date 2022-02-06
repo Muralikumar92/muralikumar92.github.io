@@ -4,6 +4,11 @@
   "private": true,
   "homepage": "https://muralikumar92.github.io/wordle-tamil",
   "dependencies": {
+    "@emotion/react": "^11.7.1",
+    "@emotion/styled": "^11.6.0",
+    "@material-ui/core": "^4.12.3",
+    "@material-ui/styles": "^4.11.4",
+    "@mui/material": "^5.4.0",
     "components": "0.1.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
@@ -11,7 +16,6 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "dev": "react-scripts start dev",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",

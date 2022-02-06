@@ -9,20 +9,23 @@ export class Board extends React.Component {
 
   render() {
     return (
-      <div class="board">
+      <div className="board">
         {this.props.board.map((word, index) => {
           var rows = [];
           var wordArr = split(word);
           for (var i = 0; i < this.props.wordleLength; i++) {
             rows.push(
               <GameTile
+                id={i}
+                key={i}
                 value={wordArr[i]}
                 color={this.props.tileColors[index][i]}
+                darkMode={this.props.darkMode}
               />
             );
           }
           return (
-            <div class="tile-row" length={this.props.wordleLength}>
+            <div key={index} className="tile-row" length={this.props.wordleLength}>
               {rows}
             </div>
           );

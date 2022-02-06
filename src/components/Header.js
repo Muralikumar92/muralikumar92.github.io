@@ -1,10 +1,7 @@
 import React from 'react';
-import { Stats } from './Stats';
 import { BiHelpCircle,BiBarChartAlt2 } from 'react-icons/bi';
-import {FcSettings,FcBarChart} from 'react-icons/fc'
-import {VscSettings} from 'react-icons/vsc'
-import {RiListSettingsFill} from 'react-icons/ri'
 import {IoSettingsOutline} from 'react-icons/io5'
+import Badge from '@mui/material/Badge';
 
 export class Header extends React.Component {
   constructor(props) {
@@ -12,19 +9,27 @@ export class Header extends React.Component {
   }
 
   render() {
+    const darkMode = this.props.darkMode ? "true" : "false";
     return (
-      <div class="header">
-        <div class="menu">
-        <BiHelpCircle class="icon" onClick={this.props.onHelp}/>
+      <div className="header" darkmode={darkMode}>
+        <div className="menu" >
+        <Badge color="primary" variant="dot" invisible={true}>
+        <BiHelpCircle className="icon" darkmode={darkMode} onClick={this.props.onHelp}/>
+        </Badge>
         </div>
-        <div class="title">வேடல்<div class="titleSubText">(WORD HUNTING)</div></div>
-        <div class="menu">
-        <BiBarChartAlt2 class="icon" onClick={this.props.onStats}/>
-        <IoSettingsOutline class="icon" onClick={this.props.onFeedback}/>
-          {/* <button class="statsButton" onClick={this.props.onStats}>
+        <div className="title">வேடல்<div className="titleSubText">(சொல் வேட்டை)</div></div>
+        <div className="menu" darkmode={this.props.darkMode ? "true" : false}>
+        <Badge color="primary" variant="dot" invisible={true}>
+        <BiBarChartAlt2 className="icon" darkmode={darkMode} onClick={this.props.onStats}/>
+        </Badge>
+        <Badge color="primary" variant="dot" invisible={this.props.badgeInvisible}>
+            <IoSettingsOutline className="icon" darkmode={darkMode} onClick={this.props.onFeedback}/>
+        </Badge>
+        
+          {/* <button className="statsButton" onClick={this.props.onStats}>
             📊
           </button> */}
-          {/* <button class="statsButton" onClick={this.props.onFeedback}>
+          {/* <button className="statsButton" onClick={this.props.onFeedback}>
             😃
           </button> */}
         </div>

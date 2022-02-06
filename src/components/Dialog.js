@@ -1,16 +1,17 @@
 import React from 'react';
-import { FaceBookShare } from './GameTile';
-import { getPreviousWord, wordleIndex } from '../util/words';
 import { Stats } from './Stats';
 import { Board } from './Board';
+import { Settings } from './Settings';
 import { split } from '../util/languageUtil';
-import {BsShare} from 'react-icons/bs'
-import {AiOutlineShareAlt} from 'react-icons/ai'
+import { AiOutlineShareAlt } from 'react-icons/ai'
+import Snackbar from '@mui/material/Snackbar';
 
 export class Dialog extends React.Component {
-  wordleIndex = wordleIndex();
   constructor(props) {
     super(props);
+    this.wordleIndex = this.props.mode.getWordleIndex();
+    this.state = { snackbar: { open: false, message: '' } }
+    this.handleClose = this.handleClose.bind(this);
   }
   emojis = {
     green: '🟩',
@@ -32,15 +33,15 @@ export class Dialog extends React.Component {
     var attemptsCount = filterTileColors.length;
     var value =
       '#WORDLE_TAMIL ' +
-      this.wordleIndex +
-      '  ' +
-      attemptsCount +
-      '/' +
-      6 +
-      '\n' +
-      '#வேடல்' +
-      '\n';
-    //
+        this.wordleIndex +
+        '  ' +
+        attemptsCount +
+        '/' +
+        6 +
+        '\n' +
+        '#வேடல்' +
+        '\n' + (this.props.mode.isSentamilMode() ? '#இலக்கிய_சொல்லாடல் ' : '') + (this.props.mode.isEasyMode() ? '*எளிய முறையில்*' : '') +
+          '\n';
 
     filterTileColors.forEach((row) => {
       value = value + row.map((tile) => this.emojis[tile]).join('') + '\n';
@@ -64,7 +65,9 @@ export class Dialog extends React.Component {
         alert(e);
       }
     } else {
+      value  = value + document.location.href;
       navigator.clipboard.writeText(value);
+      this.setState({ snackbar: { open: true, message: 'copied to clipboard' } })
       return value;
     }
   }
@@ -85,13 +88,22 @@ export class Dialog extends React.Component {
     return value;
   }
 
+  handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    this.setState({ snackbar: { open: false } });
+  };
+
   getContent() {
+    const darkMode = this.props.darkMode ? "true" : "false";
     if (this.props.page == 'won') {
       return (
         <div id="wonDialog">
           <h2>Congrats You Won !!</h2>
 
-          <div class="copySection">
+          <div className="copySection">
             <div>
               <div>
                 <div>
@@ -108,32 +120,38 @@ export class Dialog extends React.Component {
               <br />
               <div>
                 <button
-                  class="share-button"
+                  className="share-button"
                   onClick={() => this.copyClipBoard()}
                 >
                   {navigator.share ? 'SHARE' : 'COPY'}
-                  <AiOutlineShareAlt className='share-button'/>
+                  {(navigator.share && <AiOutlineShareAlt className='share-button' />)}
                 </button>
+                <Snackbar anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                  open={this.state.snackbar.open}
+                  autoHideDuration={2000}
+                  onClose={this.handleClose}
+                  message={this.state.snackbar.message}
+                />
               </div>
             </div>
-            {/* <div class="timerSection">
+            {/* <div className="timerSection">
               <div>
                 <div>
                   <strong>
-                    LAST WORDLE: <p class="lastWordle">{getPreviousWord()}</p>
+                    LAST WORDLE: <p className="lastWordle">{getPreviousWord()}</p>
                   </strong>
                 </div>
                 <div>
                   <b>NEXT WORDLE:</b>
                 </div>
-                <p class="lastWordle timer">{this.state.timer}</p>
+                <p className="lastWordle timer">{this.state.timer}</p>
               </div>
             </div> */}
           </div>
         </div>
       );
     } else if (this.props.page === 'stats') {
-      return <Stats stats={this.props.stats} gameState={this.props.gameState}/>;
+      return <Stats stats={this.props.stats} darkMode={darkMode} gameState={this.props.gameState} previousWord={this.props.mode.getPreviousWord()} />;
     } else if (this.props.page === 'lost') {
       return (
         <div>
@@ -145,41 +163,16 @@ export class Dialog extends React.Component {
       return (
         <div>
           <strong>PREVIOUS WORD</strong>
-          <p class="lastWordle">{getPreviousWord()}</p>
+          <p className="lastWordle">{this.props.mode.getPreviousWord()}</p>
           <Board
             board={this.props.prevBoard}
-            wordleLength={split(getPreviousWord()).length}
+            wordleLength={split(this.props.mode.getPreviousWord()).length}
             tileColors={this.props.prevTileColors}
           />
         </div>
       );
     } else if (this.props.page === 'feedback') {
-      return (
-        <div>
-          <div class="container">
-            <p>
-              <strong>FEEDBACK:</strong>
-            </p>
-            <p>
-              <a
-                href="https://twitter.com/intent/tweet?screen_name=tamil_wordle"
-                target="blank"
-                title="@tamil_wordle"
-              >
-                Twitter
-              </a>
-            </p>
-            <p>
-              <a
-                href="mailto:wordletamil@gmail.com?subject=Feedback"
-                title="wordletamil@gmail.com"
-              >
-                Email
-              </a>
-            </p>
-          </div>
-        </div>
-      );
+      return <Settings />
     } else {
       return (
         <div>
@@ -190,10 +183,11 @@ export class Dialog extends React.Component {
   }
 
   render() {
+    const darkMode = this.props.darkMode ? "true" : "false";
     return (
-      <div id="myModal" class="modal" page={this.props.page}>
-        <div class="modal-content">
-          <span class="close" onClick={this.props.onClose}>
+      <div id="myModal" className="modal" page={this.props.page}>
+        <div className="modal-content" darkMode={darkMode}>
+          <span className="close" onClick={this.props.onClose}>
             &times;
           </span>
           <p>{this.getContent()}</p>
