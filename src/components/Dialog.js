@@ -2,6 +2,7 @@ import React from 'react';
 import { Stats } from './Stats';
 import { Board } from './Board';
 import { Settings } from './Settings';
+import { UpdateInfo } from './UpdateInfo';
 import { split } from '../util/languageUtil';
 import { AiOutlineShareAlt } from 'react-icons/ai'
 import { BiLinkExternal } from 'react-icons/bi'
@@ -14,6 +15,7 @@ export class Dialog extends React.Component {
     this.state = { snackbar: { open: false, message: '' }, [props.mode.mode]: { ans: '', showAnsClicked: false } }
     this.handleClose = this.handleClose.bind(this);
     this.onShowAns = this.onShowAns.bind(this);
+    this.getClipBoardContent = this.getClipBoardContent.bind(this);
   }
 
   componentDidUpdate() {
@@ -29,10 +31,6 @@ export class Dialog extends React.Component {
     setTimeout(() => this.setState({ [this.props.mode.mode]: { ans: this.props.mode.getWordOfDay(), showAnsClicked: true } }), 500)
   }
 
-  getWordleIndex() {
-    return this.props.mode.getWordleIndex();
-  }
-
   emojis = {
     green: '🟩',
     yello: '🟨',
@@ -46,27 +44,31 @@ export class Dialog extends React.Component {
   // ⬜⬜🟨🟨⬜
   // 🟩🟩🟩🟩🟩
 
-  copyClipBoard() {
+  getClipBoardContent() {
     var filterTileColors = this.props.tileColors.filter(
       (row) => row.length > 0
     );
-    var attemptsCount = filterTileColors.length;
+    var attemptsCount = this.props.gameState === 'WON' ? filterTileColors.length : 'X';
     var value =
       '#WORDLE_TAMIL ' +
-      this.getWordleIndex() +
+      this.props.mode.wordleIndex +
       '  ' +
       attemptsCount +
       '/' +
-      6 +
+      this.props.mode.chances +
       '\n' +
       '#வேடல்' +
-      '\n' + (this.props.mode.isSentamilMode() ? '#இலக்கிய_சொல்லாடல் ' : '') + (this.props.mode.isEasyMode() ? '*எளிய முறையில்*' : '') +
+      '\n' + (this.props.mode.isSentamilMode() ? '#இலக்கிய_சொல்லாடல் \n' : '') + (this.props.mode.isEasyMode() ? '*எளிய முறையில்*' : '') +
       '\n';
 
     filterTileColors.forEach((row) => {
       value = value + row.map((tile) => this.emojis[tile]).join('') + '\n';
     });
+    return value;
+  }
 
+  copyClipBoard() {
+    var value = this.getClipBoardContent();
     if (navigator.share) {
       try {
         navigator
@@ -92,22 +94,6 @@ export class Dialog extends React.Component {
     }
   }
 
-  getTitle() {
-    var filterTileColors = this.props.tileColors.filter(
-      (row) => row.length > 0
-    );
-    var attemptsCount = filterTileColors.length;
-    var value =
-      '#WORDLE_TAMIL - ' +
-      this.getWordleIndex() +
-      '  ' +
-      attemptsCount +
-      '/' +
-      6 +
-      '\n';
-    return value;
-  }
-
   handleClose = (event, reason) => {
     if (reason === 'clickaway') {
       return;
@@ -116,17 +102,38 @@ export class Dialog extends React.Component {
     this.setState({ snackbar: { open: false } });
   };
 
+  getCopySection() {
+    return (
+      <div className="copySection">
+        <div style={{textAlign:'left'}}>{this.getClipBoardContent().split('\n').map(item => (<div>{item}</div>))}</div>
+        <br />
+        <div className='share-button-container'>
+          <button
+            className="share-button"
+            onClick={() => this.copyClipBoard()}
+          >
+            {navigator.share ? 'SHARE' : 'COPY'}
+            {(navigator.share && <AiOutlineShareAlt className='share-button' />)}
+          </button>
+          <Snackbar anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+            open={this.state.snackbar.open}
+            autoHideDuration={2000}
+            onClose={this.handleClose}
+            message={this.state.snackbar.message}
+          />
+        </div>
+      </div>);
+  }
+
   getContent() {
     const darkMode = this.props.darkMode ? "true" : "false";
     if (this.props.page == 'won') {
       return (
         <div id="wonDialog">
           <h3>வாழ்த்துக்கள்!!</h3>
-
           <div style={{display:"flex"}}>
               <div className="tile-row helprow showAnsRow" length={split(this.props.mode.getWordOfDay()).length}>
-                {split(this.props.mode.getWordOfDay()).map((l, index) => <GameTile id={index + 'lost-dialog'}
-                  id={index}
+                {split(this.props.mode.getWordOfDay()).map((l, index) => <GameTile id={index}
                   value={l}
                   color={l !== '_' ? 'green' : ''}
                   darkMode={this.props.darkMode}></GameTile>)}
@@ -141,52 +148,7 @@ export class Dialog extends React.Component {
           </div>
           <hr/>
           <br/>
-
-          <div>
-            <div className="copySection">
-              <div>
-                <div>
-                  {this.getTitle()}
-                </div>
-                {this.props.tileColors.map((row) => (
-                  <div>
-                    {' '}
-                    {Object.values(row).map((tile) => this.emojis[tile])}
-                  </div>
-                ))}
-                <div>#வேடல்</div>
-              </div>
-              <br />
-              <div className='share-button-container'>
-                <button
-                  className="share-button"
-                  onClick={() => this.copyClipBoard()}
-                >
-                  {navigator.share ? 'SHARE' : 'COPY'}
-                  {(navigator.share && <AiOutlineShareAlt className='share-button' />)}
-                </button>
-                <Snackbar anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-                  open={this.state.snackbar.open}
-                  autoHideDuration={2000}
-                  onClose={this.handleClose}
-                  message={this.state.snackbar.message}
-                />
-              </div>
-            </div>
-            {/* <div className="timerSection">
-              <div>
-                <div>
-                  <strong>
-                    LAST WORDLE: <p className="lastWordle">{getPreviousWord()}</p>
-                  </strong>
-                </div>
-                <div>
-                  <b>NEXT WORDLE:</b>
-                </div>
-                <p className="lastWordle timer">{this.state.timer}</p>
-              </div>
-            </div> */}
-          </div>
+          {this.getCopySection()}
         </div>
       );
     } else if (this.props.page === 'stats') {
@@ -198,15 +160,13 @@ export class Dialog extends React.Component {
     } else if (this.props.page === 'lost') {
       return (
         <div className='lostDialog'>
-
           <h3>மன்னிக்கவும், வாய்ப்புகள் முடிந்தன!!</h3>
-          <br />
           {this.state[this.props.mode.mode] && !this.state[this.props.mode.mode].showAnsClicked && <button className='showAnsButton' onClick={() => this.onShowAns()}>சரியான விடை காட்டுக</button>}
           {this.state[this.props.mode.mode] && this.state[this.props.mode.mode].showAnsClicked && 
           (
             <div style={{display:"flex"}}>
               <div className="tile-row helprow showAnsRow" length={split(this.props.mode.getWordOfDay()).length}>
-                {split(this.state[this.props.mode.mode].ans).map((l, index) => <GameTile id={index + 'lost-dialog'}
+                {split(this.state[this.props.mode.mode].ans).map((l, index) => <GameTile
                   id={index}
                   value={l}
                   color={l !== '_' ? 'green' : ''}
@@ -220,6 +180,9 @@ export class Dialog extends React.Component {
               </div>
                 </div>
           </div>)}
+          <hr/>
+          <br/>
+          {this.getCopySection()}
         </div>
       );
     } else if (this.props.page === 'prevAns') {
@@ -234,6 +197,8 @@ export class Dialog extends React.Component {
           />
         </div>
       );
+    }else if (this.props.page === 'updateInfo') {
+      return <UpdateInfo version={this.props.version}/>
     } else if (this.props.page === 'feedback') {
       return <Settings />
     } else {

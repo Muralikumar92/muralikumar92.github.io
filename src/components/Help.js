@@ -1,11 +1,17 @@
 import React from 'react';
 import { GameTile } from './GameTile';
 import {AiFillCloseCircle, AiOutlineCloseCircle} from 'react-icons/ai'
+import {FaAngleDoubleDown, FaAngleDoubleUp} from 'react-icons/fa'
 
 export class Help extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {tamil:true}
+    this.state = {tamil:true, moreRead:false}
+    this.handleMoreRead = this.handleMoreRead.bind(this);
+  }
+
+  handleMoreRead() {
+    this.setState({moreRead: !this.state.moreRead}, () => window.scrollBy(0, 300));
   }
 
   getContentInEnglish() {
@@ -111,20 +117,14 @@ export class Help extends React.Component {
       </icon> */}
     </div>
     <div>
-      <p>மறைந்துள்ள சொல்லை 6 முயற்சிகளில் கண்டுபிடிக்க.</p>
+      <p>மறைந்துள்ள சொல்லை 8 முயற்சிகளில் கண்டுபிடிக்க.</p>
       <p>ஒரு சொல்லை நிரப்பி <strong>சரிபார்</strong> பொத்தானை கிளிக் செய்யவும்.</p>
       <p>
       கீழுள்ள நிற குறிப்புகளை கொண்டு சொல்லின் எழுத்துக்களை சரிபார்க்க.
       </p>
       <hr />
-      <strong>நினைவில் கொள்க</strong>
-      <p><GameTile value="h" color="green" /> - சரியானது</p>
-      <p><GameTile value="h" color="yello" /> - சரியானது ஆனால் வேறு இடம் </p>
-      <p><GameTile value="h" color="green-partial" /> - பாதி சரியானது </p>
-      <p><GameTile value="h" color="yello-partial" /> - பாதி சரியானது ஆனால் வேறு இடம் </p>
-      <p><GameTile value="h" color="gray" /> - தவறானது </p>
-      <hr />
-      
+      <strong>நிற குறிப்புகள்</strong>
+      <p/>
       <div className="tile-row helprow" length="4">
         <GameTile value="தெ" color="green" />
         <GameTile value="ன்" color="" darkMode={this.props.darkMode}/>
@@ -170,11 +170,51 @@ export class Help extends React.Component {
       <p>
       எழுத்து <strong>கி</strong> சொல்லில் இடம்பெறவில்லை தவிர <strong>க</strong>கர வரிசையில் வேறு ஏதோ எழுத்து (<strong>க், க, கா, கு, ...</strong>) <strong>வேறு இடத்தில்</strong> இடம்பெற்றுள்ளது.
       </p>
+
+      <div className="tile-row helprow" length="4">
+        <GameTile value="இ" color="" darkMode={this.props.darkMode}/>
+        <GameTile value="ய" color="" />
+        <GameTile value="ற்" color="green-partial" darkMode={this.props.darkMode} star="true"/>
+        <GameTile value="கை" color="" darkMode={this.props.darkMode}/>
+      </div>
+      <p>
+      எழுத்து <strong>ற்</strong> சொல்லில் வேறு இடத்தில உள்ளது, அதோடு <strong>ற்</strong> உள்ள இடத்தில் வேறு <strong>ற</strong>கர வரிசையும் இடம்பெற்றுள்ளது.
+      </p>
       <hr />
-     
+      <strong>நினைவில் கொள்க</strong>
+      <p><GameTile value="h" color="green" /> - சரியானது</p>
+      <p><GameTile value="h" color="yello" /> - சரியானது ஆனால் வேறு இடம் </p>
+      <p><GameTile value="h" color="green-partial" /> - பாதி சரியானது </p>
+      <p><GameTile value="h" color="yello-partial" /> - பாதி சரியானது ஆனால் வேறு இடம் </p>
+      <p><GameTile value="h" color="gray" /> - தவறானது </p>
+      <hr />
       <p>
         <strong>நாள்தோறும் ஒரு புதிய சொல் இடம்பெறும்!</strong>
       </p>
+
+      <div className="readMore" onClick={() => this.handleMoreRead()}>
+      <center><strong>மேலும் படிக்க</strong></center>
+      <center><strong>{this.state.moreRead ? <FaAngleDoubleUp/> : <FaAngleDoubleDown/>}</strong></center>
+      </div>
+      {this.state.moreRead && (
+        <div className='readMoreSection'>
+        <br/>
+        <strong>1. ஓர் எழுத்து வரிசைக்கு இரு வண்ணங்கள் ( மஞ்சள் மற்றும் அரை-பச்சை )</strong>
+          <div>மறைந்துள்ள சொல் <strong>இன்பம்</strong> எனில், </div>
+        <div className="tile-row helprow" length="4">
+          <GameTile value="ம" color="yello-partial"/>
+          <GameTile value="னி" color="green-partial" />
+          <GameTile value="த" color="gray"/>
+          <GameTile value="ன்" color="yello"/>
+        </div>
+        <ul>
+          <li>இங்கு 2<sup>வது</sup> இடம் <strong>ன</strong>-கர வரிசை உள்ளதை குறிக்கிறது (<strong>னி</strong> தவிர்த்து).</li>
+          <li>4<sup>வது</sup> இடம் <strong>ன்</strong> சொல்லில் வேறு இடத்தில் உள்ளதை குறிக்கிறது.</li>
+          <li>எனவே <strong>ன்</strong> 2<sup>வது</sup> இடத்தில் இருக்க அதிக வாய்ப்புகள் உள்ளது. அப்படி இல்லையேல் சொல்லில் இரு <strong>ன</strong>-கர வரிசை எழுத்துக்கள் இருக்கிறது எனலாம்.</li>
+        </ul> 
+        சொல்லில் ஒரே ஒரு <strong>ன்</strong> இருப்பினும் இரண்டு இடங்களிலும் வண்ண குறிப்புகள் இருப்பது குழப்பமாக தோன்றினாலும் தர்க்கரீதியாக அது சரியான குறியீடே ஆகும். ஒருவேளை 2<sup>வது</sup> இடத்தில சாம்பல் நிறம் இருந்தால் ன-கர வரிசையே அந்த இடத்தில் இல்லை என்று தவறாக பொருள்படும்.
+        </div>
+      )}
     
       <br />
     </div>

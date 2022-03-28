@@ -21,11 +21,10 @@ export class Keyboard1 extends React.Component {
     if (!this.props.won && !this.props.disableKeyBoardInput) {
       if (val == 'enter') {
         if (split(this.state.word).length === this.props.wordleLength) {
-          if(this.state.word === this.props.worldToMatch) {
+          if (this.state.word === this.props.worldToMatch) {
             this.props.onKeyInput('enter');
             this.setState({ word: '' });
-          }
-          else if (readSettings().disableDictionaryCheck || this.state.dictionaryCheckFailed) {
+          } else if (readSettings().disableDictionaryCheck || this.state.dictionaryCheckFailed) {
             this.props.onKeyInput('enter');
             this.setState({ word: '' });
           } else {
@@ -68,9 +67,9 @@ export class Keyboard1 extends React.Component {
   }
 
   handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
+    // if (reason === 'clickaway') {
+    //   return;
+    // }
 
     this.setState({ snackbar: { open: false } });
   };
@@ -213,7 +212,7 @@ export class Keyboard1 extends React.Component {
         </div>
         <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
           open={this.state.snackbar.open}
-          autoHideDuration={1000}
+          autoHideDuration={2000}
           onClose={this.handleClose}
           message={this.state.snackbar.message}
         />
